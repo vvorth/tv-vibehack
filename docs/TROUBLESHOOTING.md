@@ -64,6 +64,11 @@ Things that bit us or contributors, so they don't bite you. Commands use `tools/
   android.display`, and the main log shows `setupwraith/.RecoveryActivity` being started every
   200 ms or so. If you're already in the loop:
   `tools/tv.py 'pm enable --user 0 com.google.android.apps.tv.launcherx'`.
+- **The TV forgets its Wi-Fi the moment setupwraith is disabled**, seen on a TCL G10 (Google TV
+  12): wificond resets the regulatory domain within half a second and the saved network is gone, so
+  the password has to be typed in on the TV. On that firmware setupwraith can't be disabled, which
+  leaves its `.RecoveryActivity` claiming Home; see `examples/tcl-g10-google-tv`. Before trying the
+  swap on a TCL Google TV, plug in Ethernet so ADB survives a Wi-Fi drop.
 - **No on-screen keyboard** after switching launchers, seen on Xiaomi: the default input method
   pointed at a Baidu keyboard that isn't installed. Fix:
   `tools/tv.py 'ime set com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME'`

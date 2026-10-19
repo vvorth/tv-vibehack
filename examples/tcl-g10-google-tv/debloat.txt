@@ -9,15 +9,34 @@
 # Stock launcher: com.google.android.apps.tv.launcherx (pass it to restore.sh, the default is wrong here).
 # Live TV app: com.tcl.tv (keep it, it also owns HDMI/antenna playback). Keep com.tcl.tvinput,
 # com.tcl.dashboard, com.tcl.suspension, com.tcl.autopair and com.tcl.systemserver too.
-# Already disabled at the factory: com.tcl.logkit, tv.samba.ssm.ui (Samba TV ACR), com.tcl.ttvs.
+# Already disabled at the factory on the first unit: com.tcl.logkit, tv.samba.ssm.ui (Samba TV ACR),
+# com.tcl.ttvs. A second unit on the same firmware (model "Smart TV Pro", Wi-Fi only) shipped all three
+# ENABLED, so they are listed below; on a set where they are already off the lines do nothing.
+# com.tcl.tv.plus and com.tcl.smartlink.core were not installed on the second unit at all.
+#
+# Second unit: the whole list below, minus the Optional block, applied 2026-10-19 in four batches;
+# Wi-Fi, Home and all inputs (tuner + 3 HDMI) checked after each batch and again after a reboot.
 #
 # Known quirks on this firmware:
 # - The red "TV" tile disappears from the Google TV Home row after this list (probably
 #   com.tcl.partnercustomizer). TV stays in the Apps row and behind the Inputs tile.
 # - Disabling dreamx leaves screensaver_components pointing at it. Switch to the AOSP fallback with
 #   tools/tv.py 'settings put secure screensaver_components com.android.dreams.basic/.Colors'
+#   That fallback is plain colour gradients with no options. To get Ambient mode back, re-enable dreamx
+#   AND point the setting back at it; enabling the package alone leaves the gradients:
+#   tools/tv.py 'pm enable --user 0 com.google.android.apps.tv.dreamx; settings put secure screensaver_components com.google.android.apps.tv.dreamx/.service.Backdrop'
 # - screencap writes an empty file while Live TV/HDMI is on screen. Press Home first.
 # - The Google TV promo banner is drawn by launcherx itself, so only launcher/ removes it.
+#
+# DO NOT DISABLE com.google.android.tungsten.setupwraith on this firmware (second unit, 2026-10-19).
+# Within half a second of `pm disable-user` killing it, wificond reset the Wi-Fi regulatory domain and
+# the TV dropped off Wi-Fi and forgot the saved network; the password had to be typed in again on the
+# TV. No reboot was involved. Re-enabling it did not drop Wi-Fi. The catch: setupwraith's
+# .RecoveryActivity claims HOME at priority 1, so with launcherx disabled Home lands on it, and with
+# launcherx enabled (priority 2) `set-home-activity` saves the preference but Android never consults
+# it. The launcher half is therefore unverified on the G10 so far. If you try it, plug in Ethernet
+# first so ADB survives a Wi-Fi drop, and reboot twice with launcherx still enabled to check that Wi-Fi
+# and the setupwraith disable both survive before disabling launcherx.
 
 # TCL content, ads and promos
 com.tcl.tv.plus                        # TCL TV+ content app
@@ -26,10 +45,19 @@ com.tcl.tv.tclhome_passive             # pushes TCL content to the home screen a
 com.tcl.partnercustomizer              # TCL tweaks to Google TV home rows
 com.tcl.interactive                    # TCL TIAS background service
 com.tcl.smartlink.core                 # bundles a silent app installer (CustomInstallService)
+com.tcl.waterfall.overseas             # TCL content recommendations
+com.tcl.messagebox                     # TCL push messages and promos
+
+# Telemetry (factory-disabled on the first unit, enabled on the second)
+com.tcl.logkit                         # log collection and upload
+tv.samba.ssm.ui                        # Samba TV ACR
+com.tcl.ttvs                           # TCL BI analytics
+com.google.android.partnersetup        # Google RLZ attribution pings
 
 # Retail demo / store mode
 com.tcl.exhibit
 com.tcl.esticker
+com.tcl.hotelmenu                      # hotel-mode menu
 
 # Preloaded apps and services
 com.tcl.ocean.instructions             # e-manual
@@ -50,3 +78,8 @@ com.google.android.tv.remote.service   # Google TV phone-app remote
 # com.netflix.tokenmanager
 # com.amazon.amazonvideo.livingroom    # Prime Video
 # com.google.android.youtube.tv
+# com.google.android.youtube.tvmusic   # YouTube Music
+# com.google.android.videos            # Play Movies
+# com.google.android.play.games
+# com.tcl.smartalexa                   # Alexa; Google Assistant is separate
+# com.tcl.miracast                     # Miracast screen mirroring; Chromecast is separate
