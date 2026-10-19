@@ -1,0 +1,51 @@
+# TCL Smart TV Pro (device G10), Google TV 12, firmware STT2.230203.001, at 192.168.0.176
+# Based on examples/tcl-g10-google-tv/debloat.txt, adjusted for this TV on 2026-10-19.
+#
+# Apply:   TV_HOST=192.168.0.176 tools/disable.sh backup/tcl-g10-20261019-194632/debloat.txt
+# Undo:    TV_HOST=192.168.0.176 tools/restore.sh backup/tcl-g10-20261019-194632/debloat.txt com.google.android.apps.tv.launcherx
+#
+# Kept on purpose: USB media player, game bar, phone remote, Google Assistant, firmware updates,
+# YouTube, Chromecast, Play Store, and everything the G10 list marks load-bearing.
+
+# TCL content, ads and promos
+com.tcl.channelplus                    # TCL Live FAST channels, also removes them from Live TV
+com.tcl.tv.tclhome_passive             # pushes TCL content to the home screen at boot
+com.tcl.partnercustomizer              # TCL tweaks to Google TV home rows
+com.tcl.interactive                    # TCL TIAS background service
+com.tcl.waterfall.overseas             # TCL content recommendations
+com.tcl.messagebox                     # TCL push messages and promos
+
+# Telemetry (factory-disabled on other G10s, enabled on this one)
+com.tcl.logkit                         # log collection and upload
+tv.samba.ssm.ui                        # Samba TV ACR
+com.tcl.ttvs                           # TCL BI analytics
+com.google.android.partnersetup        # Google RLZ attribution pings
+com.google.android.feedback
+android.autoinstalls.config.google.gtvpai
+
+# Retail demo / store / hotel mode
+com.tcl.exhibit
+com.tcl.esticker
+com.tcl.hotelmenu
+
+# Preloaded apps and services
+com.tcl.ocean.instructions             # e-manual
+com.tcl.repairguide
+com.tcl.UpdatePeripheral               # re-enable to update a TCL soundbar
+com.google.android.marvin.talkback
+# com.google.android.apps.tv.dreamx    # Ambient mode: kept, re-enabled 2026-10-19 (screensaver_components set back to .service.Backdrop)
+
+# Apps not used on this TV
+com.netflix.ninja
+com.netflix.tokenmanager
+com.amazon.amazonvideo.livingroom
+com.google.android.youtube.tvmusic
+com.google.android.videos
+com.google.android.play.games
+com.tcl.smartalexa
+com.tcl.airplay2
+com.realtek.airplay2
+com.tcl.miracast
+
+# DO NOT DISABLE com.google.android.tungsten.setupwraith on this TV: disabling it reset the Wi-Fi
+# regulatory domain within half a second and the TV forgot its network (2026-10-19, logcat confirmed).
